@@ -2,7 +2,7 @@ import './App.css';
 
 function App() {
 
-  const deg =6;
+  const deg = 6;
   const hr = document.querySelector('#hr');
   const mn = document.querySelector('#mn');
   const sc = document.querySelector('#sc');
