@@ -17,7 +17,7 @@ const Activity = () => {
     const [content, setContent] = useState()
     useEffect(() => {
 
-        fetch('http://www.boredapi.com/api/activity/', {
+        fetch('https://www.boredapi.com/api/activity/', {
             method: 'GET'
         }).then(res => res.json()).then((data) => {
             const text = data.activity;
@@ -27,7 +27,7 @@ const Activity = () => {
 
     const onRefresh = async () => {
 
-        fetch('http://www.boredapi.com/api/activity/', {
+        fetch('https://www.boredapi.com/api/activity/', {
             method: 'GET'
         }).then(res => res.json()).then((data) => {
             
