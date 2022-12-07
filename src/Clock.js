@@ -1,6 +1,5 @@
 import './App.css';
 import React from 'react';
-import { useState } from "react";
 
 class Clock extends React.Component {
   constructor(props) {
@@ -8,12 +7,20 @@ class Clock extends React.Component {
 
     // Initializing the state 
     this.state = { color: 'lightgreen' };
+    this.state ={
+      time: new Date().toLocaleTimeString()
+  }
   }
   componentDidMount() {
     const deg = 6;
     const hr = document.querySelector('#hr');
     const mn = document.querySelector('#mn');
     const sc = document.querySelector('#sc');
+
+    this.intervalID = setInterval(() =>
+    this.updateClock(),
+    1000
+);
 
     setInterval(() => {
       let day = new Date();
@@ -29,6 +36,17 @@ class Clock extends React.Component {
     })
 
   }
+
+  updateClock(){
+    this.setState({
+        time: new Date().toLocaleTimeString()
+    });
+}
+
+  componentWillUnmount(){
+    clearInterval(this.intervalID)
+}
+
   render() {
 
     return (
