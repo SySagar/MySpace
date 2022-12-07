@@ -8,6 +8,9 @@ module.exports = {
         clockcolor: '#eb6866',
       }
     },
+    fontFamily:{
+      'Rajhdhani' : ['Rajhdhani']
+    }
   },
   plugins: [],
 }
