@@ -1,13 +1,11 @@
 import './App.css';
 import React from 'react';
 
-import {Routes,Route} from "react-router-dom"
 import Home from './Home'
 import Authenticate from './Authenticate'
 import SignUp from './Signup'
 
 import Navbar from './Navbar';
-import Home from './Home';
 import FlashCards from './FlashCards';
 import { Route, Routes } from "react-router-dom"
 import CreateCard from './CreateCard'
