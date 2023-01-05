@@ -178,3 +178,8 @@
 .hr,.mn,.sc{
   border-radius: 50%;
 }
+
+/* for authentication page */
+.frame{
+  height: 100vh;
+}
