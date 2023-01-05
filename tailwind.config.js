@@ -16,6 +16,9 @@ module.exports = {
         '265': '2.65',
       }
     },
+    fontFamily:{
+      'Rajhdhani' : ['Rajhdhani']
+    }
   },
   plugins: [],
 }
