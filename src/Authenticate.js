@@ -116,7 +116,7 @@ export default function Authenticate() {
 
                         <Stack direction="column" className=' w-1/2 m-6 p-14  pr-32 gap-3'>
 
-                            <Typography>
+                            <Typography variant='h6'>
                                 Login
                             </Typography>
 
