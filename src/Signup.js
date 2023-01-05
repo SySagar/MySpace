@@ -10,50 +10,38 @@ import { Typography } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import {useNavigate} from 'react-router-dom';
-import SignUp from './Signup'
 
-export default function Authenticate() {
+export default function Signup() {
 
-    const GoogleAuth = ()=>
-    {
-      window.open("https://my-space-backend-ten.vercel.app/auth/google/", "_blank")
-    }
-  
-    
-    const GithubAuth = ()=>
-    {
-      window.open("https://my-space-backend-ten.vercel.app/auth/github/", "_blank")
-    }
-  
-
+   
     const [username, setUserName] = useState(null);
     const [email, setUserEmail] = useState(null);
     const [password, setPassword] = useState(null);
     const [error, setError] = useState(null);
-    const [test, set] = useState(false);
+   const navigate = useNavigate();
 
-    const navigate = useNavigate();
+    
+   const navigateSignUp = () => {
+    // 👇️ navigate to /home
+    navigate('/signup');
+  };
 
-    const navigateHome = () => {
-      // 👇️ navigate to /home
-      navigate('/Home');
-    };
+  const navigateHome = () => {
+    // 👇️ navigate to /home
+    navigate('/Home');
+  };
   
-    const navigateSignUp = () => {
-        // 👇️ navigate to /home
-        navigate('/Signup');
-      };
+
 
     const userAuth = () => {
         setError(null);
         //setLoading(true);
         console.log(username);
-        console.log( email);
-        console.log(password);
+        console.log( email.value);
+        console.log(password.value);
         //const json = JSON.stringify({ answer: 42 });
         axios.post('https://my-space-backend-ten.vercel.app/signup', { name: username, email: email, password: password }).then(response => {
             //setLoading(false);
-            console.log(response);
             if (response.data.error === "user does not exist" || response.data.message === "Invalid credentials") {
                 //error
                 navigateSignUp()
@@ -62,7 +50,7 @@ export default function Authenticate() {
                 //good
                 navigateHome()
             }
-            // alert(response.data.message || response.data.error);
+            alert(response.data.message || response.data.error);
             //props.history.push('/dashboard');
         }).catch(error => {
             //setLoading(false);
@@ -88,15 +76,6 @@ export default function Authenticate() {
     };
 
 
-
-    function getUserinfo(e) {
-        e.preventDefault();
-
-
-        //console.log("naem is "+nameRef.current.value)
-        set(true);
-    }
-
     return (
 
         <Box className='frame 
@@ -117,7 +96,7 @@ export default function Authenticate() {
                         <Stack direction="column" className=' w-1/2 m-6 p-14  pr-32 gap-3'>
 
                             <Typography>
-                                Login
+                                Create your account
                             </Typography>
 
             
@@ -131,15 +110,7 @@ export default function Authenticate() {
                             <Typography variant='body2' pt={1}>
                                 or sign in with
 
-                                <Stack direction='row' className='gap-8 pt-7 pb-4'>
-                                <Button  onClick={GoogleAuth} sx={{'&:hover': {backgroundColor: '#c299ff'},}} style={{ color: "black"}} variant="outlined"  startIcon={<GoogleIcon style={{ color: "black"}}></GoogleIcon> }>
-                                    Google
-                                </Button>
-
-                                <Button  onClick={GithubAuth} sx={{'&:hover': {backgroundColor: '#c299ff'},}} style={{ color: "black" }} variant="outlined" startIcon={<GitHubIcon style={{ color: "black" }}/>}>
-                                    Github
-                                </Button>
-                                </Stack>
+                                
 
                             </Typography>
                             <Button onClick={userAuth}  variant="contained">Sign in</Button>
