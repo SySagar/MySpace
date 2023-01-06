@@ -18,7 +18,7 @@ export default function Navbar() {
                 
                 <div className='scale-150 w-11'>
 
-                    <Link to="/CreateCard">
+                    <Link to="/Home/CreateCard">
                         <Typography >
                             <IconButton color="primary" aria-label="Show answer" component="label">
                                 <AddCircleOutlineTwoToneIcon />
@@ -33,15 +33,19 @@ export default function Navbar() {
                     direction='row'
                     justifyContent={'center'}
                     gap={20}>
-                    <Link to="/">
-                        <Typography fontWeight={500} className='custom'>
+                    <Link to="/Home">
+                        <div className='clayButton p-2 px-7'>
+                        <Typography  className='custom'>
                             Home
                         </Typography>
+                        </div>
                     </Link>
-                    <Link to="/MyCards">
+                    <Link to="/Home/MyCards">
+                    <div className='clayButton p-2 px-7'>
                         <Typography  className='custom'>
                             Card Bucket
                         </Typography>
+                        </div>
                     </Link>
 
                 </Stack>

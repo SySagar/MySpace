@@ -1,14 +1,36 @@
 import './App.css';
+import axios from 'axios';
 import React from 'react';
-import {Link} from 'react-router-dom'
-import Stack from '@mui/material/Stack';
-import { Typography } from '@mui/material';
 import { useState } from 'react';
-import ReactDOM from 'react-dom/client';
 
 export default function CreateCard() {
 
-    const [name, setName] = useState("");
+  
+  const [cardQuestion , setCardQuestion] = useState("")
+  const [cardAnswer , setCardAnswer] = useState("")
+
+  const onSubmit = ()=>{
+    axios.post('https://my-space-drive-api.onrender.com/', { question: cardQuestion , answer : cardAnswer }).then(response => {
+      
+    console.log(response);
+  }).catch(error => {
+      //setLoading(false);
+      if (error.response.status === 401) console.log(error.response.data.message);
+      else console.log("Something went wrong. Please try again later.");
+  });  
+  }
+
+
+    function handleChange1(event){
+     setCardQuestion(event.target.value);
+
+  };
+
+  function handleChange2(event){
+    setCardAnswer(event.target.value);
+
+ };
+
   return (
     <div className="CreateCard  pt-20">
 
@@ -28,6 +50,8 @@ export default function CreateCard() {
 							<input autocomplete="off"
                              id="question" 
                              name="question" 
+                             onChange={handleChange1}
+                              value={cardQuestion}
                              type="text" 
                              class="peer 
                              placeholder-transparent
@@ -54,6 +78,8 @@ export default function CreateCard() {
 							<input autocomplete="off" 
                             id="Answer"
                              name="Answer"
+                             onChange={handleChange2}
+                              value={cardAnswer}
                               type="text"
                                class="peer placeholder-transparent 
                                h-10
@@ -74,7 +100,7 @@ export default function CreateCard() {
                                peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Answer</label>
 						</div>
 						<div class="relative">
-							<button class="bg-blue-500 text-white rounded-md px-2 py-1">Submit</button>
+							<button onClick={onSubmit} class="bg-blue-500 text-white rounded-md px-2 py-1">Submit</button>
 						</div>
 					</div>
 				</div>

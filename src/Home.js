@@ -4,14 +4,22 @@ import SearchBar from './SearchBar'
 import Clock from './Clock'
 import Activity from './Activity'
 import Stack from '@mui/material/Stack';
+import Navbar from './Navbar';
 
 export default function Home() {
 
   return (
-    <div className="Home">
+    <div className="Home  flex 
+    flex-col 
+     bg-backcolor">
+
+<div className="navbar pt-10">
+  <Navbar></Navbar>
+    </div>
+
+
       <div className='main flex 
-      flex-row border
-       border-black
+      flex-row
         min-h-screen max-h-screen
          overflow-hidden bg-backcolor
           justify-evenly items-center
