@@ -2,14 +2,42 @@ import './App.css';
 import axios from 'axios';
 import React from 'react';
 import { useState } from 'react';
+import Backdrop from '@mui/material/Backdrop';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import Fade from '@mui/material/Fade';
+import lottie from "lottie-web";
+import submitLogo from "./submit.json";
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
 
 export default function CreateCard() {
+
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   
   const [cardQuestion , setCardQuestion] = useState("")
   const [cardAnswer , setCardAnswer] = useState("")
 
   const onSubmit = ()=>{
+
+   handleOpen()
+
     axios.post('https://my-space-drive-api.onrender.com/', { question: cardQuestion , answer : cardAnswer }).then(response => {
       
     console.log(response);
@@ -30,6 +58,16 @@ export default function CreateCard() {
     setCardAnswer(event.target.value);
 
  };
+
+ React.useEffect(() => {
+  lottie.loadAnimation({
+    container: document.querySelector("#react-logo"),
+    animationData: submitLogo,
+    renderer: "svg", // "canvas", "html"
+    loop: true, // boolean
+    autoplay: true, // boolean
+  });
+}, []);
 
   return (
     <div className="CreateCard  pt-20">
@@ -103,11 +141,35 @@ export default function CreateCard() {
 							<button onClick={onSubmit} class="bg-blue-500 text-white rounded-md px-2 py-1">Submit</button>
 						</div>
 					</div>
+          
 				</div>
+        
 			</div>
 		</div>
 	</div>
 </div>
+<Modal
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={open}>
+          <Box sx={style}>
+
+            <Stack direction='row'>
+
+            <Typography id="transition-modal-description" sx={{ mt: 2 , ml: 12}}>
+              Saved
+            </Typography>
+            <div id="react-logo" style={{ width: 30, height: 30 }} />
+            </Stack>
+          </Box>
+        </Fade>
+      </Modal>
     </div>
   );
 }
