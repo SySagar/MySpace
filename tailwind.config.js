@@ -9,6 +9,13 @@ module.exports = {
         login: '#8256D8',
         black: '#000000'
       },
+      screens: {
+        
+        '3xl': '1870px',
+        
+        'desktop': '1280px',
+        
+      },
       scale: {
         '134': '1.345',
         '165': '1.65',
