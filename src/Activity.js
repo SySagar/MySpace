@@ -44,7 +44,13 @@ const Activity = () => {
 
             <Box
 
-                className='question-card h-60 hover:scale-105 hover:shadow-2xl duration-300 w-1/2 max-lg:scale-90 max-lg:pl-7 xl:pr-8 3xl:mr-28'>
+                className='question-card 
+                h-60 hover:scale-105 
+                hover:shadow-2xl 
+                duration-300 w-1/2
+                 max-lg:scale-90 
+                max-lg:pl-7 xl:pr-8
+                 3xl:mr-28'>
 
                 <Card elevation={8} className='h-60 w-96' style={{ background: 'radial-gradient(#1fe4f5, #3fbafe)' }}>
                     <CardContent>

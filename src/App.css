@@ -446,4 +446,31 @@ box-shadow: 35px 35px 68px 0px rgba(145, 192, 255, 0.5), inset -8px -8px 16px 0p
   border-radius: 26px;
   
   box-shadow: 35px 35px 68px 0px rgba(128, 179, 248, 0.5), inset -8px -8px 16px 0px rgba(128, 179, 248, 0.6), inset 0px 11px 28px 0px rgb(255, 255, 255);
+
 }
+
+
+
+/*Add clay*/
+.add-clay
+{
+
+  backdrop-filter: blur(7px);
+
+  background-color: rgba(255, 255, 255, 1);
+  
+  border-radius: 20px;
+  
+  box-shadow: 35px 35px 68px 0px rgba(92, 92, 134, 0.5), inset -9px -9px 16px 0px rgba(92, 92, 134, 0.6), inset 0px 11px 28px 0px rgb(255, 255, 255);
+
+  transition: transform .2s;
+}
+
+.add-blog:hover {
+  transform: scale(1.1); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+}
+
+/*glow effect*/
+.box-shadow-hover:hover {
+  box-shadow: 0 20px 20px -17px rgba(20, 102, 208, 0.53);
+ }
