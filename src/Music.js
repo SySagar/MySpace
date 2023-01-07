@@ -133,12 +133,11 @@ const Music = () => {
 
   }
 
-  console.log(songs.source)
 
 
   return (
     <div className="Music">
-      <audio src={songs.source} ref={audioElem} onTimeUpdate={onPlaying} />
+      <audio src={currentSong.source} ref={audioElem} onTimeUpdate={onPlaying} />
       <Player songs={songs} setSongs={setSongs} isplaying={isplaying} setisplaying={setisplaying} audioElem={audioElem} currentSong={currentSong} setCurrentSong={setCurrentSong} />
     </div>
   );

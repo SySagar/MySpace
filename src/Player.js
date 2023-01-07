@@ -17,16 +17,6 @@ export default function Player({audioElem, isplaying, setisplaying, currentSong,
     }
   
   
-    const checkWidth = (e)=>
-    {
-      let width = clickRef.current.clientWidth;
-      const offset = e.nativeEvent.offsetX;
-  
-      const divprogress = offset / width * 100;
-      audioElem.current.currentTime = divprogress / 100 * currentSong.length;
-  
-    }
-  
     const skipBack = ()=>
     {
       const index = songs.findIndex(x=>x.name == currentSong.name);
@@ -45,6 +35,7 @@ export default function Player({audioElem, isplaying, setisplaying, currentSong,
   
     const skiptoNext = ()=>
     {
+      setisplaying(!isplaying);
       const index = songs.findIndex(x=>x.name == currentSong.name);
   
       if (index == songs.length-1)
@@ -70,8 +61,8 @@ export default function Player({audioElem, isplaying, setisplaying, currentSong,
                 <h3>{currentSong.name}<br/> <span>{currentSong.anime}</span></h3>
                 <br/>
                 <ul class="sci">
-                    <li><a onClick={skipBack} ><SkipPreviousIcon style={{color:'black'} }/></a></li>
-                    <li><a onClick={PlayPause} >{isplaying ? <PlayCircleIcon style={{color:'black'}}/> : <PauseIcon style={{color:'black'}}/>}</a></li>
+                    <li><a onClick={skipBack} ><SkipPreviousIcon className='prev ' style={{color:'black'} }/></a></li>
+                    <li> {!isplaying ? <a onClick={PlayPause} > <PlayCircleIcon style={{color:'black'}}/> </a> : <a onClick={PlayPause} > <PauseIcon style={{color:'black'}}/> </a>}</li>
                     <li><a onClick={skiptoNext} ><SkipNextIcon style={{color:'black'}}/></a></li>
                 </ul>
             </div>

@@ -7,8 +7,6 @@ import { useState } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { Typography } from '@mui/material';
-import GoogleIcon from '@mui/icons-material/Google';
-import GitHubIcon from '@mui/icons-material/GitHub';
 import {useNavigate} from 'react-router-dom';
 
 export default function Signup() {
