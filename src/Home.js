@@ -5,8 +5,8 @@ import Clock from './Clock'
 import Activity from './Activity'
 import Stack from '@mui/material/Stack';
 import Navbar from './Navbar';
-import Player from './Player'
 import Music from './Music'
+import GoogleSearch from './GoogleSearch';
 
 export default function Home() {
 
@@ -39,9 +39,11 @@ export default function Home() {
 
         <Stack direction='row' justifyContent='space-evenly'>
 
-        <div className="Clock max-lg:scale-75 max-lg:mt-96">
+        <div className="Clock max-lg:scale-75 max-lg:mt-96 xl:mr-28 ">
           <Clock></Clock>
             </div>
+
+<Stack direction='column' alignItems='center'>
 
           <Stack direction='row' className='w-1/2' justifyContent={'center'} alignItems='center' paddingBottom='70px'>
 
@@ -50,16 +52,19 @@ export default function Home() {
             </div>
           </Stack>
 
+          <GoogleSearch></GoogleSearch>
+
+</Stack>
         </Stack>
                    
-
-        <Stack  direction='row' marginTop='50px' className="max-lg: justify-center 2xl:gap-60 xl:gap-24  lg:gap-28 3xl:gap-32">
+      
+        <Stack  direction='row' marginTop='50px' className="max-lg: justify-center 2xl:gap-36   lg:gap-28 3xl:gap-28  3xl:pl-32">
 
           <div className="search">
             <SearchBar></SearchBar>
           </div>
 
-          <div className="quotes max-lg:mt-10 max-lg:mr-10 xl:pl-20">
+          <div className="quotes max-lg:mt-10 max-lg:mr-10 xl:pl-32 2xl:pr-36">
             <Activity></Activity>
           </div>
 

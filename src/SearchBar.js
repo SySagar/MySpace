@@ -49,7 +49,7 @@ const SearchBar = () => {
     };
 
     return (
-        <div className="Search space-y-16 max-lg:scale-75 max-lg:pl-24 3xl:pl-20">
+        <div className="Search space-y-16 max-lg:scale-75 max-lg:pl-24 3xl:pl-36 2xl:pl-40">
             <form onSubmit={formSubmit} className="bg-neutral-300 shadow-xl 
             rounded-2xl 
             w-full p-4 

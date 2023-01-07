@@ -106,15 +106,17 @@ export default function Authenticate() {
         justify-evenly
          items-center'>
 
-            <Box className='main-body bg-white flex  w-2/3 h-4/5 rounded-2xl shadow-2xl'>
+            <Box className='main-body bg-white flex  w-2/3 h-4/5 rounded-2xl shadow- lg:w-4/5  3xl:w-2/3'>
                 <div>
 
-                    <Stack direction="row" className='sub-body flex w-11/12 h-4/5 bg-white mx-11 mt-6'>
+                    <Stack direction="row" className='sub-body flex w-11/12 h-4/5 bg-white mx-11 mt-6 lg:justify-between lg:w-5/6 '>
 
                     <img class='scale-265 h-10 rounded-md' src="title.png" alt="images" />
 
 
-                        <Stack direction="column" className=' w-1/2 m-6 p-14  pr-32 gap-3'>
+                        <Stack direction="column" 
+                        className=' w-1/2 m-6 p-14  pr-32 gap-3
+                                    lg:w-3/5 lg:pr-36'>
 
                             <Typography variant='h6'>
                                 Login
@@ -131,7 +133,7 @@ export default function Authenticate() {
                             <Typography variant='body2' pt={1}>
                                 or sign in with
 
-                                <Stack direction='row' className='gap-8 pt-7 pb-4'>
+                                <Stack direction='row' className='gap-8 pt-7 pb-4 lg:gap-12 lg:mr-2'>
                                 <Button  onClick={GoogleAuth} sx={{'&:hover': {backgroundColor: '#c299ff'},}} style={{ color: "black"}} variant="outlined"  startIcon={<GoogleIcon style={{ color: "black"}}></GoogleIcon> }>
                                     Google
                                 </Button>
@@ -145,15 +147,20 @@ export default function Authenticate() {
                             <Button onClick={userAuth}  variant="contained">Sign in</Button>
 
 
-                            {test && <Typography>
-                                {username}
-                                {password}
-
-                            </Typography>}
                         </Stack>
 
 
-                        <img class='w-72 h-80 mt-20 scale-165 scale-x-155 ml-12 rounded-xl' src="Space2.jpg" alt="images" />
+                        <img class='w-72 h-80
+                         mt-20 scale-165 
+                          3xl:ml-40
+                          3xl:w-10/12
+                          2xl:scale-190 2xl:ml-44 2xl:w-80 2xl:h-4/6 2xl:mt-32
+                          xl:scale-170 xl:h-max xl:mt-24  xl:ml-48
+                          lg:scale-208
+                          lg:mt-36
+                          lg:h-3/5
+                          lg:mb-7
+                          scale-x-155 ml-12 rounded-xl' src="Space2.jpg" alt="images" />
 
 
                     </Stack>
