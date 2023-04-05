@@ -1,70 +1,116 @@
-import './App.css';
-import React from 'react';
-import { Link } from 'react-router-dom'
-import Stack from '@mui/material/Stack';
-import { Typography } from '@mui/material';
-import AddCircleOutlineTwoToneIcon from '@mui/icons-material/AddCircleOutlineTwoTone';
-import IconButton from '@mui/material/IconButton';
+import "./App.css";
+import React from "react";
+import { Link } from "react-router-dom";
+import Stack from "@mui/material/Stack";
+import { Box, Typography } from "@mui/material";
+import Avatar from "@mui/material/Avatar";
+import { useProfileStore } from "./globalState/useProfileStore";
+import Popper from "@mui/material/Popper";
+import Fade from "@mui/material/Fade";
+import Paper from "@mui/material/Paper";
+import LogoutIcon from '@mui/icons-material/Logout';
+import { Button } from "@mui/material";
+import { useAuth0 } from "@auth0/auth0-react";
+import { Divider } from "@mui/material";
+import AnimatedPage from "./transition/AnimatedPage";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
+  const { logout, isAuthenticated} = useAuth0();
 
-    return (
-        <nav className="navbar">
-            <div className="links">
-
-
-                <Stack
-                className=''
-                    direction='row'
-                    justifyContent={'center'}
-                    alignItems='center'
-                    gap={20}>
+  const pic = useProfileStore((state) => state.profilePic);
+  const name = useProfileStore((state) => state.profileName);
+  const navigate = useNavigate();
 
 
-                   
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [open, setOpen] = React.useState(false);
+  const [placement, setPlacement] = React.useState();
 
+  const handleClick = (newPlacement) => (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpen((prev) => placement !== newPlacement || !prev);
+    setPlacement(newPlacement);
+  };
 
-                    <Link to="/Home">
-                        <div className='clayButton p-2 px-7'>
-                            <Typography variant='h6' className='custom'>
-                                Home
-                            </Typography>
-                        </div>
-                    </Link>
-                    <Link to="/Home/MyCards">
-                        <div className='clayButton p-2 px-7'>
-                            <Typography   variant='h6'className='custom'>
-                                Card Bucket
-                            </Typography>
-                        </div>
-                    </Link>
+  const navigateProfile = () => {
+    navigate("/Profile");
+  };
 
+  const logoutUser = () => {
+    logout({ returnTo: window.location.origin });
+  };
 
-                    <Stack
-                        justifyContent='center'
-                        className='absolute right-20 add-blog hover:drop-shadow-[0_2px_2px_rgba(0,111,255,1)]'
-                        direction={'row'}
-                        alignItems={'end'}>
+  return (
+    <AnimatedPage>
+      <nav className="navbar">
+        <div className="links">
+          <Popper
+          className="popper"
+            sx={{ width: "180px" }}
+            open={open}
+            anchorEl={anchorEl}
+            placement={placement}
+            transition
+          >
+            {({ TransitionProps }) => (
+              <Fade {...TransitionProps} timeout={350}>
+                <Paper sx={{ borderRadius: "10%", padding: "10px" }}>
+                  <Box onClick={navigateProfile}>
+                    <Typography sx={{ p: 2 }}>{name}</Typography>
+                  </Box>
+                  <Divider />
+                  <Button
+                    variant="contained"
+                    sx={[
+                      { width: "100%" },
+                      { backgroundColor: "#fff" },
+                      { color: "#FF0000" },
+                      { "&:hover": { backgroundColor: "white" } },
+                    ]}
+                    disableElevation
+                    onClick={logoutUser}
+                    endIcon={<LogoutIcon />}
+                  >
+                    Log Out
+                  </Button>
+                </Paper>
+              </Fade>
+            )}
+          </Popper>
 
-                        <div className="scale-170">
+          <Stack
+            direction="row"
+            justifyContent={"center"}
+            alignItems="center"
+            gap={20}
+          >
+            <Link to="/Home">
+              <div className="clayButton p-2 px-7">
+                <Typography variant="h6" className="custom">
+                  Home
+                </Typography>
+              </div>
+            </Link>
+            <Link to="/Home/MyCards">
+              <div className="clayButton p-2 px-7">
+                <Typography variant="h6" className="custom">
+                  Card Bucket
+                </Typography>
+              </div>
+            </Link>
 
-                            <div className='scale-150 w-11'>
-
-                                <Link to="/Home/CreateCard">
-                                    <Typography >
-                                        <IconButton color="primary" aria-label="Show answer" component="label">
-                                            <AddCircleOutlineTwoToneIcon />
-                                        </IconButton>
-                                    </Typography>
-                                </Link>
-                            </div>
-                        </div>
-                        <br />
-                    </Stack>
-
-                </Stack>
-
+            <div className="avatar right-12 absolute">
+              <Avatar
+                onClick={handleClick("bottom-end")}
+                sx={{ width: 55, height: 55, border: "4px solid  #3366ff" }}
+                alt={name}
+                src={pic}
+              />
             </div>
-        </nav>
-    );
+          </Stack>
+        </div>
+      </nav>
+    </AnimatedPage>
+  );
 }
