@@ -495,16 +495,13 @@ box-shadow: 35px 35px 68px 0px rgba(145, 192, 255, 0.5), inset -8px -8px 16px 0p
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #18bee7;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #888;
+  background: #1054dc;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
-} 
 
 
 /*Login Button*/

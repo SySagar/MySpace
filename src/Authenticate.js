@@ -1,13 +1,8 @@
 import "./App.css";
-import axios from "axios";
 import React, { useEffect } from "react";
 import Stack from "@mui/material/Stack";
-import { Button } from "@mui/material";
-import { useState } from "react";
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
 import { Typography } from "@mui/material";
-import GoogleIcon from "@mui/icons-material/Google";
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useProfileStore } from "./globalState/useProfileStore";
@@ -15,18 +10,6 @@ import AnimatedPage from "./transition/AnimatedPage";
 
 export default function Authenticate() {
   const { loginWithPopup, user, isAuthenticated } = useAuth0();
-
-  const GoogleAuth = () => {
-    window.open(
-      "https://my-space-backend-ten.vercel.app/auth/google/",
-      "_blank"
-    );
-  };
-
-  const [username, setUserName] = useState(null);
-  const [email, setUserEmail] = useState(null);
-  const [password, setPassword] = useState(null);
-  const [error, setError] = useState(null);
 
   const setName = useProfileStore((state) => state.setProfileName);
   const setPic = useProfileStore((state) => state.setProfilePic);
@@ -48,12 +31,7 @@ export default function Authenticate() {
       setPic(user.picture);
       navigate("/Home");
     } else navigate("/");
-  }, [isAuthenticated, navigate]);
-
-  const navigateSignUp = () => {
-    // 👇️ navigate to /home
-    navigate("/Signup");
-  };
+  }, [isAuthenticated, navigate, setName, setPic, user.name, user.picture]);
 
   return (
     <Box
@@ -87,7 +65,6 @@ export default function Authenticate() {
                 width: "950px",
               }}
             >
-              
               <Stack
                 className="main-body "
                 style={{
@@ -99,7 +76,7 @@ export default function Authenticate() {
                 }}
                 direction="column"
               >
-                   <img style={{width:'300px'}} src="title.png" alt="" />
+                <img style={{ width: "300px" }} src="title.png" alt="" />
 
                 <Typography
                   variant="h3"
@@ -115,16 +92,19 @@ export default function Authenticate() {
                 </Button> */}
 
                 <div className="loginbtn">
-
-                <div  onClick={loginWithPopup} className="my-super-cool-btn">
-                  <div className="dots-container">
-                    <div className="dot"></div>
-                    <div className="dot"></div>
-                    <div className="dot"></div>
-                    <div className="dot"></div>
+                  <div onClick={loginWithPopup} className="my-super-cool-btn">
+                    <div className="dots-container">
+                      <div className="dot"></div>
+                      <div className="dot"></div>
+                      <div className="dot"></div>
+                      <div className="dot"></div>
+                    </div>
+                    <span
+                      style={{ fontWeight: "500px", fontFamily: "sans-serif" }}
+                    >
+                      Dive in
+                    </span>
                   </div>
-                  <span style={{fontWeight:'500px',fontFamily:'sans-serif'}}>Dive in</span>
-                </div>
                 </div>
               </Stack>
 

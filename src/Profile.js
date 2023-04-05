@@ -20,9 +20,7 @@ export default function Profile() {
   const [image, setImage] = useState(pic);
   const [url, setUrl] = useState(pic);
 
-
   useEffect(() => {
-    
     getDownloadURL(ref(storage, "ProfilePic/" + name)).then((url) => {
       setUrl(url);
       setProfilePic(url);
@@ -85,7 +83,7 @@ export default function Profile() {
                 justifyContent="center"
                 alignItems="center"
               >
-                <TextField label="Name" variant="outlined" value={"sagar"} />
+                <TextField label="Name" variant="outlined" value={name} />
 
                 <TextField
                   label="Something about you"
@@ -97,7 +95,6 @@ export default function Profile() {
                 <TextField
                   label="Twitter handle"
                   variant="outlined"
-                  value={"sagar"}
                 />
 
                 <Button onClick={handleSubmit} variant="contained">

@@ -8,20 +8,29 @@ import { useProfileStore } from "./globalState/useProfileStore";
 import Popper from "@mui/material/Popper";
 import Fade from "@mui/material/Fade";
 import Paper from "@mui/material/Paper";
-import LogoutIcon from '@mui/icons-material/Logout';
+import LogoutIcon from "@mui/icons-material/Logout";
 import { Button } from "@mui/material";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Divider } from "@mui/material";
 import AnimatedPage from "./transition/AnimatedPage";
 import { useNavigate } from "react-router-dom";
+import { storage } from "./firebase/firebaseConfig";
+import { ref, getDownloadURL } from "firebase/storage";
+import { useEffect } from "react";
 
 export default function Navbar() {
-  const { logout, isAuthenticated} = useAuth0();
+  const { logout, user } = useAuth0();
 
   const pic = useProfileStore((state) => state.profilePic);
   const name = useProfileStore((state) => state.profileName);
+  const setProfilePic = useProfileStore((state) => state.setProfilePic);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    getDownloadURL(ref(storage, "ProfilePic/" + user.name)).then((url) => {
+      setProfilePic(url);
+    });
+  }, [setProfilePic, user.name]);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);
@@ -46,7 +55,7 @@ export default function Navbar() {
       <nav className="navbar">
         <div className="links">
           <Popper
-          className="popper"
+            className="popper"
             sx={{ width: "180px" }}
             open={open}
             anchorEl={anchorEl}

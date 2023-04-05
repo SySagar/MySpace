@@ -11,7 +11,7 @@ import AnimatedPage from "./transition/AnimatedPage";
 export default function Home() {
   return (
     <div
-    className="Home  flex 
+      className="Home  flex 
     flex-col 
     bg-backcolor
     justify-center"
@@ -70,7 +70,7 @@ export default function Home() {
             </Stack>
           </div>
         </div>
-    </AnimatedPage>
-      </div>
+      </AnimatedPage>
+    </div>
   );
 }
