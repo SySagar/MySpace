@@ -31,7 +31,7 @@ export default function Authenticate() {
       setPic(user.picture);
       navigate("/Home");
     } else navigate("/");
-  }, [isAuthenticated, navigate, setName, setPic, user.name, user.picture]);
+  }, [isAuthenticated, navigate, setName, setPic]);
 
   return (
     <Box
