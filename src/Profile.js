@@ -11,6 +11,8 @@ import AnimatedPage from "./transition/AnimatedPage";
 import { storage } from "./firebase/firebaseConfig";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { Button } from "@mui/material";
+import { db } from "./firebase/firebaseConfig";
+import { doc, setDoc, getDoc } from "firebase/firestore"; 
 
 export default function Profile() {
   const name = useProfileStore((state) => state.profileName);
@@ -19,16 +21,62 @@ export default function Profile() {
 
   const [image, setImage] = useState(pic);
   const [url, setUrl] = useState(pic);
+  const [about, setAbout] = useState("");
+  const [twitter,setTwitter] = useState("");
+  
 
   useEffect(() => {
     getDownloadURL(ref(storage, "ProfilePic/" + name)).then((url) => {
       setUrl(url);
       setProfilePic(url);
     });
+
+    getDoc(doc(db, "info", name)).then(docSnap => {
+      if (docSnap.exists()) {
+        // console.log("Document data:", docSnap.data());
+        setAbout(docSnap.data().about);
+        setTwitter(docSnap.data().twitter);
+        
+      } else {
+        console.log("No such document!");
+      }
+    })
+
   }, [name, setProfilePic]);
 
+  const onChangeText = (e) => {
+    e.preventDefault();
+    setAbout(e.target.value);
+   
+  }
+
+  
+  const onChangeTwitter = (e) => {
+    e.preventDefault();
+    setTwitter(e.target.value);
+   
+  }
+
+  const handleSubmit2 = () => {
+   
+    setDoc(doc(db, "info", name), {
+      name: name,
+      about: about,
+      twitter: twitter,
+    })
+      .then(() => {
+        console.log("Document successfully written!");
+      })
+      .catch((error) => {
+        console.error("Error writing document: ", error);
+      });
+
+  };
+
   const handleSubmit = () => {
+
     const imageRef = ref(storage, "ProfilePic/" + name);
+    
     uploadBytesResumable(imageRef, image).then(() => {
       getDownloadURL(imageRef)
         .then((url) => {
@@ -41,7 +89,11 @@ export default function Profile() {
           console.log(error.message, "error uploading image");
         });
       setImage(null);
-    });
+    }).then(() => {
+      console.log("image done")
+      handleSubmit2();
+    })
+
   };
 
   const handleImageChange = (e) => {
@@ -90,11 +142,15 @@ export default function Profile() {
                   variant="outlined"
                   multiline
                   maxRows={4}
+                  value={about}
+                  onChange={onChangeText}
                 />
 
                 <TextField
                   label="Twitter handle"
                   variant="outlined"
+                  value={twitter}
+                  onChange={onChangeTwitter}
                 />
 
                 <Button onClick={handleSubmit} variant="contained">

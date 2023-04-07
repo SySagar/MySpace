@@ -24,13 +24,16 @@ export default function Navbar() {
   const pic = useProfileStore((state) => state.profilePic);
   const name = useProfileStore((state) => state.profileName);
   const setProfilePic = useProfileStore((state) => state.setProfilePic);
+  const setProfileName = useProfileStore((state) => state.setProfileName);
   const navigate = useNavigate();
 
   useEffect(() => {
     getDownloadURL(ref(storage, "ProfilePic/" + user.name)).then((url) => {
       setProfilePic(url);
+      console.log(url);
+      setProfileName(user.name)
     });
-  }, [setProfilePic, user.name]);
+  }, [setProfileName, setProfilePic, user.name]);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);
