@@ -13,10 +13,24 @@ import LoginReq from "./LoginReq";
 import Error from "./Error";
 import AnimatedPage from "./transition/AnimatedPage";
 import Test from "./Test";
-import { Typography } from "@mui/material";
+import { Snackbar } from "@mui/material";
 
 export default function App() {
   const { isLoading, isAuthenticated, loginWithPopup } = useAuth0();
+
+  const [state, setState] = React.useState({
+    open: true,
+    vertical: "top",
+    horizontal: "center",
+  });
+  const { vertical, horizontal, open } = state;
+
+
+
+  const handleClose = () => {
+    setState({ ...state, open: false });
+  };
+
 
   useEffect(() => {
     console.log("isAuthenticated", isAuthenticated, "isLoading", isLoading);
@@ -29,13 +43,41 @@ export default function App() {
     }
   }, [isAuthenticated, isLoading, loginWithPopup]);
 
-  if (isLoading) {
+  if (isLoading && !isAuthenticated) {
     return (
-      <div>
-        <Typography>Loading...</Typography>
+      <div  className="loading h-fit bg-backcolor">
+           
+              <Snackbar
+                anchorOrigin={{ vertical, horizontal }}
+                open={open}
+                onClose={handleClose}
+                message="Waiting for authentication...."
+                key={vertical + horizontal}
+              />
+            
       </div>
     );
   }
+  else
+  if (isLoading && isAuthenticated) {
+  // eslint-disable-next-line no-lone-blocks
+  {
+    return (
+      <div  className="loading h-fit bg-backcolor">
+           
+              <Snackbar
+                anchorOrigin={{ vertical, horizontal }}
+                open={open}
+                onClose={handleClose}
+                message="Loading...."
+                key={vertical + horizontal}
+              />
+            
+      </div>
+    );
+  }
+}
+
   return (
     <div className="App flex flex-col bg-backcolor">
       <AnimatedPage>

@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { storage } from "./firebase/firebaseConfig";
 import { ref, getDownloadURL } from "firebase/storage";
 import { useEffect } from "react";
+import { motion } from "framer-motion";
 
 export default function Navbar() {
   const { logout, user } = useAuth0();
@@ -112,14 +113,16 @@ export default function Navbar() {
               </div>
             </Link>
 
-            <div className="avatar right-12 absolute">
+            <motion.div 
+            className="avatar right-12 absolute"
+            whileTap={{ scale: 0.9 }}>
               <Avatar
                 onClick={handleClick("bottom-end")}
                 sx={{ width: 55, height: 55, border: "4px solid  #3366ff" }}
                 alt={name}
                 src={pic}
               />
-            </div>
+            </motion.div>
           </Stack>
         </div>
       </nav>

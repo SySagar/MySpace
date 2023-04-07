@@ -7,7 +7,6 @@ export default function LoginReq() {
     <div className="loginReq">
       <Stack
         direction={"column"}
-        border={2}
         height={"100vh"}
         alignItems="flex-start"
         justifyContent={"flex-start"}

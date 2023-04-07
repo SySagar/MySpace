@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { CircularProgress, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { Stack } from "@mui/system";
 import React, { useEffect } from "react";
@@ -12,7 +12,9 @@ import { storage } from "./firebase/firebaseConfig";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { Button } from "@mui/material";
 import { db } from "./firebase/firebaseConfig";
-import { doc, setDoc, getDoc } from "firebase/firestore"; 
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import { useLoading } from "./globalState/useLoading";
+import Snackbar from "@mui/material/Snackbar";
 
 export default function Profile() {
   const name = useProfileStore((state) => state.profileName);
@@ -22,43 +24,71 @@ export default function Profile() {
   const [image, setImage] = useState(pic);
   const [url, setUrl] = useState(pic);
   const [about, setAbout] = useState("");
-  const [twitter,setTwitter] = useState("");
-  
+  const [twitter, setTwitter] = useState("");
+  const [isLoading, setLoadingMessage, finishLoading, loadingMessage] =
+    useLoading((state) => [
+      state.isLoading,
+      state.setLoadingMessage,
+      state.finishLoading,
+      state.loadingMessage,
+    ]);
+
+  const [state, setState] = React.useState({
+    open: false,
+    vertical: "top",
+    horizontal: "center",
+  });
+  const { vertical, horizontal, open } = state;
+
+  const handleClick = (newState) => () => {
+    setState({ open: true, ...newState });
+  };
+
+  const handleClose = () => {
+    setState({ ...state, open: false });
+  };
 
   useEffect(() => {
-    getDownloadURL(ref(storage, "ProfilePic/" + name)).then((url) => {
-      setUrl(url);
-      setProfilePic(url);
-    });
+   
+     async function fetchData() {
+        getDownloadURL(ref(storage, "ProfilePic/" + name)).then((url) => {
+          setUrl(url);
+          setProfilePic(url);
+        });
 
-    getDoc(doc(db, "info", name)).then(docSnap => {
-      if (docSnap.exists()) {
-        // console.log("Document data:", docSnap.data());
-        setAbout(docSnap.data().about);
-        setTwitter(docSnap.data().twitter);
-        
-      } else {
-        console.log("No such document!");
+        getDoc(doc(db, "info", name)).then((docSnap) => {
+          if (docSnap.exists()) {
+            // console.log("Document data:", docSnap.data());
+            setAbout(docSnap.data().about);
+            setTwitter(docSnap.data().twitter);
+          } else {
+            console.log("No such document!");
+          }
+        });
       }
-    })
+      try {
+        fetchData();
+      }
+      catch (error) {
+        console.log(error.message, "error getting image");
+      }
+      finally {
+        finishLoading();
+      }
 
-  }, [name, setProfilePic]);
+  }, []);
 
   const onChangeText = (e) => {
     e.preventDefault();
     setAbout(e.target.value);
-   
-  }
+  };
 
-  
   const onChangeTwitter = (e) => {
     e.preventDefault();
     setTwitter(e.target.value);
-   
-  }
+  };
 
   const handleSubmit2 = () => {
-   
     setDoc(doc(db, "info", name), {
       name: name,
       about: about,
@@ -70,30 +100,43 @@ export default function Profile() {
       .catch((error) => {
         console.error("Error writing document: ", error);
       });
-
   };
 
   const handleSubmit = () => {
-
-    const imageRef = ref(storage, "ProfilePic/" + name);
     
-    uploadBytesResumable(imageRef, image).then(() => {
-      getDownloadURL(imageRef)
-        .then((url) => {
-          setUrl(url);
-        })
-        .catch((error) => {
-          console.log(error.message, "error getting image");
-        })
-        .catch((error) => {
-          console.log(error.message, "error uploading image");
-        });
-      setImage(null);
-    }).then(() => {
-      console.log("image done")
-      handleSubmit2();
-    })
+      const imageRef = ref(storage, "ProfilePic/" + name);
 
+      setLoadingMessage("Saving changes...");
+
+      handleClick({
+        vertical: "top",
+        horizontal: "center",
+      })();
+ 
+      uploadBytesResumable(imageRef, image)
+        .then(() => {
+          getDownloadURL(imageRef)
+            .then((url) => {
+              setUrl(url);
+              setProfilePic(url);
+            })
+            .catch((error) => {
+              console.log(error.message, "error getting image");
+            })
+            .catch((error) => {
+              console.log(error.message, "error uploading image");
+            });
+          setImage(null);
+        })
+        .then(() => {
+          console.log("image done");
+          handleSubmit2();
+        }).finally(() => {
+          finishLoading();
+             
+        });
+   
+  
   };
 
   const handleImageChange = (e) => {
@@ -113,6 +156,17 @@ export default function Profile() {
           justifyContent="center"
           alignItems="center"
         >
+          {isLoading && 
+            <div>
+              <Snackbar
+                anchorOrigin={{ vertical, horizontal }}
+                open={open}
+                onClose={handleClose}
+                message={loadingMessage}
+                key={vertical + horizontal}
+              />
+            </div>
+          }
           <Stack
             direction={"column"}
             className="profile-clay w-1/2 h-5/6"
@@ -138,7 +192,7 @@ export default function Profile() {
                 <TextField label="Name" variant="outlined" value={name} />
 
                 <TextField
-                  label="Something about you"
+                  label="Something about me"
                   variant="outlined"
                   multiline
                   maxRows={4}
@@ -154,7 +208,7 @@ export default function Profile() {
                 />
 
                 <Button onClick={handleSubmit} variant="contained">
-                  save!
+                  {isLoading ? <CircularProgress sx={{color:'white'}}/> : "Save"}
                 </Button>
               </Stack>
               <Stack
