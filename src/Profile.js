@@ -15,19 +15,24 @@ import { db } from "./firebase/firebaseConfig";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { useLoading } from "./globalState/useLoading";
 import Snackbar from "@mui/material/Snackbar";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function Profile() {
+  
+  const {  user } = useAuth0();
   const name = useProfileStore((state) => state.profileName);
   const pic = useProfileStore((state) => state.profilePic);
   const setProfilePic = useProfileStore((state) => state.setProfilePic);
   const setTwitterUrl = useProfileStore((state) => state.setTwitterUrl);
   const setAboutUrl = useProfileStore((state) => state.setAbout);
+  const setProfileName = useProfileStore((state) => state.setProfileName);
 
   const [image, setImage] = useState(pic);
   const [url, setUrl] = useState(pic);
   const [about, setAbout] = useState("");
   const [twitter, setTwitter] = useState("");
   const [cards, setCard] = useState([]);
+  const [username, setUserName] = useState(name);
 
   const [isLoading, setLoadingMessage, finishLoading, loadingMessage] =
     useLoading((state) => [
@@ -54,14 +59,16 @@ export default function Profile() {
 
   useEffect(() => {
     async function fetchData() {
-      getDownloadURL(ref(storage, "ProfilePic/" + name)).then((url) => {
+      getDownloadURL(ref(storage, "ProfilePic/" + user.name)).then((url) => {
         setUrl(url);
         setProfilePic(url);
       });
 
-      getDoc(doc(db, "info", name)).then((docSnap) => {
+      getDoc(doc(db, "info", user.name)).then((docSnap) => {
         if (docSnap.exists()) {
-          // console.log("Document data:", docSnap.data());
+          console.log("Document data:", docSnap.data());
+          setUserName(docSnap.data().name);
+          setProfileName(docSnap.data().name);
           setAbout(docSnap.data().about);
           setTwitter(docSnap.data().twitter);
           setCard(docSnap.data().cards);
@@ -89,9 +96,18 @@ export default function Profile() {
     setTwitter(e.target.value);
   };
 
+  const onChangeName = (e) => {
+    e.preventDefault();
+    setUserName(e.target.value);
+    setProfileName(e.target.value);
+  };
+
   const handleSubmit2 = () => {
-    setDoc(doc(db, "info", name), {
-      name: name,
+
+    console.log(username);
+    
+    setDoc(doc(db, "info", user.name), {
+      name: username,
       about: about,
       twitter: twitter,
       cards: cards,
@@ -108,7 +124,7 @@ export default function Profile() {
   };
 
   const handleSubmit = () => {
-    const imageRef = ref(storage, "ProfilePic/" + name);
+    const imageRef = ref(storage, "ProfilePic/" + user.name);
 
     setLoadingMessage("Saving changes...");
 
@@ -191,7 +207,7 @@ export default function Profile() {
                 justifyContent="center"
                 alignItems="center"
               >
-                <TextField label="Name" variant="outlined" value={name} />
+                <TextField label="Name" variant="outlined" value={username} onChange={onChangeName}/>
 
                 <TextField
                   label="Something about me"

@@ -8,8 +8,11 @@ import { useEffect } from "react";
 import { useLoading } from "./globalState/useLoading";
 import { Grid, Snackbar} from "@mui/material";
 import FlipCard from "./FlipCard";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function FlashCards() {
+  
+  const {  user } = useAuth0();
   const name = useProfileStore((state) => state.profileName);
   const [flashCards, setFlashCards] = useState([]);
   const [isLoading, setLoadingMessage, finishLoading, loadingMessage] =
@@ -47,7 +50,7 @@ export default function FlashCards() {
     async function fetchData() {
 
       const cardArray = [];
-      await getDoc(doc(db, "info", name)).then((docSnap) => {
+      await getDoc(doc(db, "info", user.name)).then((docSnap) => {
         if (docSnap.exists()) {
           console.log("Document data:", docSnap.data().cards);
           docSnap.data().cards?.forEach((card) => {

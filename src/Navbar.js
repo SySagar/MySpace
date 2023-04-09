@@ -18,6 +18,8 @@ import { storage } from "./firebase/firebaseConfig";
 import { ref, getDownloadURL } from "firebase/storage";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
+import { db } from "./firebase/firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function Navbar() {
   const { logout, user } = useAuth0();
@@ -29,12 +31,28 @@ export default function Navbar() {
   const navigate = useNavigate();
 
   useEffect(() => {
+  async function fetchData() {
     getDownloadURL(ref(storage, "ProfilePic/" + user.name)).then((url) => {
       setProfilePic(url);
-      console.log(url);
-      setProfileName(user.name);
     });
-  }, [setProfileName, setProfilePic, user.name]);
+
+    getDoc(doc(db, "info", user.name)).then((docSnap) => {
+      if (docSnap.exists()) {
+        // console.log("Document data:", docSnap.data());
+  
+        setProfileName(docSnap.data().name);
+
+      } else {
+        console.log("No such document!");
+      }
+    });
+  }
+  try {
+    fetchData();
+  } catch (error) {
+    console.log(error.message, "error getting image");
+  }
+}, []);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);

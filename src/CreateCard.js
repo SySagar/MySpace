@@ -15,6 +15,7 @@ import { db } from "./firebase/firebaseConfig";
 import { useProfileStore } from "./globalState/useProfileStore";
 import { useLoading } from "./globalState/useLoading";
 import { Snackbar } from "@mui/material";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const style = {
   position: "absolute",
@@ -29,6 +30,8 @@ const style = {
 };
 
 export default function CreateCard() {
+  
+  const {  user } = useAuth0();
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -61,7 +64,7 @@ export default function CreateCard() {
   const name = useProfileStore((state) => state.profileName);
 
   useEffect(() => {
-    getDoc(doc(db, "info", name)).then((docSnap) => {
+    getDoc(doc(db, "info", user.name)).then((docSnap) => {
       if (docSnap.exists()) {
         setCard(docSnap.data().cards);
         setTwitter(docSnap.data().twitter);
@@ -89,7 +92,7 @@ export default function CreateCard() {
     })();
 
     try {
-      await setDoc(doc(db, "info", name), {
+      await setDoc(doc(db, "info", user.name), {
         name: name,
         about: about,
         twitter: twitter,
