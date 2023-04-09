@@ -1,6 +1,5 @@
 import "./App.css";
-import axios from "axios";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
@@ -10,7 +9,12 @@ import lottie from "lottie-web";
 import submitLogo from "./submit.json";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import  AnimatedPage  from "./transition/AnimatedPage";
+import AnimatedPage from "./transition/AnimatedPage";
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import { db } from "./firebase/firebaseConfig";
+import { useProfileStore } from "./globalState/useProfileStore";
+import { useLoading } from "./globalState/useLoading";
+import { Snackbar } from "@mui/material";
 
 const style = {
   position: "absolute",
@@ -29,26 +33,76 @@ export default function CreateCard() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const [isLoading, setLoadingMessage, finishLoading, loadingMessage] =
+    useLoading((state) => [
+      state.isLoading,
+      state.setLoadingMessage,
+      state.finishLoading,
+      state.loadingMessage,
+    ]);
+
+  const [state, setState] = React.useState({
+    Open: false,
+    vertical: "top",
+    horizontal: "center",
+  });
+  const { vertical, horizontal, Open } = state;
+
+  const handleClick = (newState) => () => {
+    setState({ Open: true, ...newState });
+  };
+
   const [cardQuestion, setCardQuestion] = useState("");
   const [cardAnswer, setCardAnswer] = useState("");
+  const [cards, setCard] = useState({});
+  const [twitter, setTwitter] = useState("");
+  const [about, setAbout] = useState("");
 
-  const onSubmit = () => {
-    handleOpen();
+  const name = useProfileStore((state) => state.profileName);
 
-    axios
-      .post("https://my-space-drive-api.onrender.com/", {
-        question: cardQuestion,
-        answer: cardAnswer,
-      })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        //setLoading(false);
-        if (error.response.status === 401)
-          console.log(error.response.data.message);
-        else console.log("Something went wrong. Please try again later.");
+  useEffect(() => {
+    getDoc(doc(db, "info", name)).then((docSnap) => {
+      if (docSnap.exists()) {
+        setCard(docSnap.data().cards);
+        setTwitter(docSnap.data().twitter);
+        setAbout(docSnap.data().about);
+      } else {
+        console.log("No such document!");
+      }
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cardAnswer, cardQuestion]);
+
+  const onSubmit = async () => {
+    const tempArr = {
+      front: cardQuestion,
+      back: cardAnswer,
+    };
+
+    cards.push(tempArr);
+
+    setLoadingMessage("Saving changes...");
+    handleClick({
+      vertical: "top",
+      horizontal: "center",
+    })();
+
+    try {
+      await setDoc(doc(db, "info", name), {
+        name: name,
+        about: about,
+        twitter: twitter,
+        cards: cards,
+      }).then(() => {
+        console.log("successfully added card");
+        handleOpen();
+
+        finishLoading();
       });
+    } catch (error) {
+      console.log(error.message, "error getting image");
+    }
   };
 
   function handleChange1(event) {
@@ -71,7 +125,18 @@ export default function CreateCard() {
 
   return (
     <AnimatedPage>
-      <div className="CreateCard  pt-20">
+      <div className="CreateCard">
+        {isLoading && (
+          <div>
+            <Snackbar
+              anchorOrigin={{ vertical, horizontal }}
+              open={Open}
+              onClose={handleClose}
+              message={loadingMessage}
+              key={vertical + horizontal}
+            />
+          </div>
+        )}
         <div class="min-h-screen bg-backcolor py-6 flex flex-col justify-center sm:py-12">
           <div class="relative py-3 sm:max-w-xl sm:mx-auto">
             <div class="absolute inset-0 bg-gradient-to-r from-blue-300 to-blue-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>

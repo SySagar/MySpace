@@ -83,7 +83,7 @@ export default function App() {
       <AnimatedPage>
         {isAuthenticated && (
           <>
-            <div className="navbar pt-10 pb-0 ">
+            <div className="navbar">
               <Navbar></Navbar>
             </div>
             <Routes>

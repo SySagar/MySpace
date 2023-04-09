@@ -20,11 +20,15 @@ export default function Profile() {
   const name = useProfileStore((state) => state.profileName);
   const pic = useProfileStore((state) => state.profilePic);
   const setProfilePic = useProfileStore((state) => state.setProfilePic);
+  const setTwitterUrl = useProfileStore((state) => state.setTwitterUrl);
+  const setAboutUrl = useProfileStore((state) => state.setAbout);
 
   const [image, setImage] = useState(pic);
   const [url, setUrl] = useState(pic);
   const [about, setAbout] = useState("");
   const [twitter, setTwitter] = useState("");
+  const [cards, setCard] = useState([]);
+
   const [isLoading, setLoadingMessage, finishLoading, loadingMessage] =
     useLoading((state) => [
       state.isLoading,
@@ -49,33 +53,30 @@ export default function Profile() {
   };
 
   useEffect(() => {
-   
-     async function fetchData() {
-        getDownloadURL(ref(storage, "ProfilePic/" + name)).then((url) => {
-          setUrl(url);
-          setProfilePic(url);
-        });
+    async function fetchData() {
+      getDownloadURL(ref(storage, "ProfilePic/" + name)).then((url) => {
+        setUrl(url);
+        setProfilePic(url);
+      });
 
-        getDoc(doc(db, "info", name)).then((docSnap) => {
-          if (docSnap.exists()) {
-            // console.log("Document data:", docSnap.data());
-            setAbout(docSnap.data().about);
-            setTwitter(docSnap.data().twitter);
-          } else {
-            console.log("No such document!");
-          }
-        });
-      }
-      try {
-        fetchData();
-      }
-      catch (error) {
-        console.log(error.message, "error getting image");
-      }
-      finally {
-        finishLoading();
-      }
-
+      getDoc(doc(db, "info", name)).then((docSnap) => {
+        if (docSnap.exists()) {
+          // console.log("Document data:", docSnap.data());
+          setAbout(docSnap.data().about);
+          setTwitter(docSnap.data().twitter);
+          setCard(docSnap.data().cards);
+        } else {
+          console.log("No such document!");
+        }
+      });
+    }
+    try {
+      fetchData();
+    } catch (error) {
+      console.log(error.message, "error getting image");
+    } finally {
+      finishLoading();
+    }
   }, []);
 
   const onChangeText = (e) => {
@@ -93,9 +94,13 @@ export default function Profile() {
       name: name,
       about: about,
       twitter: twitter,
+      cards: cards,
     })
       .then(() => {
         console.log("Document successfully written!");
+
+        setAboutUrl(about);
+        setTwitterUrl(twitter);
       })
       .catch((error) => {
         console.error("Error writing document: ", error);
@@ -103,40 +108,37 @@ export default function Profile() {
   };
 
   const handleSubmit = () => {
-    
-      const imageRef = ref(storage, "ProfilePic/" + name);
+    const imageRef = ref(storage, "ProfilePic/" + name);
 
-      setLoadingMessage("Saving changes...");
+    setLoadingMessage("Saving changes...");
 
-      handleClick({
-        vertical: "top",
-        horizontal: "center",
-      })();
- 
-      uploadBytesResumable(imageRef, image)
-        .then(() => {
-          getDownloadURL(imageRef)
-            .then((url) => {
-              setUrl(url);
-              setProfilePic(url);
-            })
-            .catch((error) => {
-              console.log(error.message, "error getting image");
-            })
-            .catch((error) => {
-              console.log(error.message, "error uploading image");
-            });
-          setImage(null);
-        })
-        .then(() => {
-          console.log("image done");
-          handleSubmit2();
-        }).finally(() => {
-          finishLoading();
-             
-        });
-   
-  
+    handleClick({
+      vertical: "top",
+      horizontal: "center",
+    })();
+
+    uploadBytesResumable(imageRef, image)
+      .then(() => {
+        getDownloadURL(imageRef)
+          .then((url) => {
+            setUrl(url);
+            setProfilePic(url);
+          })
+          .catch((error) => {
+            console.log(error.message, "error getting image");
+          })
+          .catch((error) => {
+            console.log(error.message, "error uploading image");
+          });
+        setImage(null);
+      })
+      .then(() => {
+        console.log("image done");
+        handleSubmit2();
+      })
+      .finally(() => {
+        finishLoading();
+      });
   };
 
   const handleImageChange = (e) => {
@@ -156,7 +158,7 @@ export default function Profile() {
           justifyContent="center"
           alignItems="center"
         >
-          {isLoading && 
+          {isLoading && (
             <div>
               <Snackbar
                 anchorOrigin={{ vertical, horizontal }}
@@ -166,7 +168,7 @@ export default function Profile() {
                 key={vertical + horizontal}
               />
             </div>
-          }
+          )}
           <Stack
             direction={"column"}
             className="profile-clay w-1/2 h-5/6"
@@ -208,12 +210,17 @@ export default function Profile() {
                 />
 
                 <Button onClick={handleSubmit} variant="contained">
-                  {isLoading ? <CircularProgress sx={{color:'white'}}/> : "Save"}
+                  {isLoading ? (
+                    <CircularProgress sx={{ color: "white" }} />
+                  ) : (
+                    "Save"
+                  )}
                 </Button>
               </Stack>
               <Stack
                 height="100%"
                 width="100%"
+                paddingBottom={10}
                 justifyContent="center"
                 alignItems="center"
                 sx={{
@@ -228,7 +235,11 @@ export default function Profile() {
                   height: "fit-content",
                 }}
               >
-                <Avatar sx={{ width: 255, height: 255 }} alt={name} src={url} />
+                <Avatar
+                  sx={{ width: 255, height: 255, border: 5, color: "#52527a" }}
+                  alt={name}
+                  src={url}
+                />
                 <IconButton
                   component="label"
                   sx={{

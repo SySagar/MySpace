@@ -6,7 +6,14 @@ import { Link } from "react-router-dom";
 
 export default function footer() {
   return (
-    <div className="footer h-20">
+    <div
+      style={{
+        justifyContent: "center",
+        alignItems: "center",
+        position: "sticky",
+      }}
+      className="footer h-20"
+    >
       <Stack sx={{ justifyContent: "center", alignItems: "center" }}>
         <div className="add absolute right-6 translate-y-6">
           <Link to="/Home/CreateCard">

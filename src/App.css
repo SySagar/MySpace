@@ -502,11 +502,11 @@ box-shadow: 35px 35px 68px 0px rgba(145, 192, 255, 0.5), inset -8px -8px 16px 0p
 }
 
 ::-webkit-scrollbar-track {
-  background: #18bee7;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1054dc;
+  background:  #4082a5;
 }
 
 
@@ -753,4 +753,15 @@ box-shadow: 35px 35px 68px 0px rgba(145, 192, 255, 0.5), inset -8px -8px 16px 0p
      width:8px;
     opacity:0;
   }
+}
+
+
+.cards{
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.cards::-webkit-scrollbar {
+  display: none;
 }

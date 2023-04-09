@@ -1,84 +1,110 @@
 import "./App.css";
 import React, { useState } from "react";
-import ReactCardFlip from "react-card-flip";
-import ArrowCircleRightTwoToneIcon from "@mui/icons-material/ArrowCircleRightTwoTone";
+import { doc, getDoc } from "firebase/firestore";
 import AnimatedPage from "./transition/AnimatedPage";
+import { db } from "./firebase/firebaseConfig";
+import { useProfileStore } from "./globalState/useProfileStore";
+import { useEffect } from "react";
+import { useLoading } from "./globalState/useLoading";
+import { Grid, Snackbar} from "@mui/material";
+import FlipCard from "./FlipCard";
 
 export default function FlashCards() {
-  const [flip, setFlip] = useState(false);
+  const name = useProfileStore((state) => state.profileName);
+  const [flashCards, setFlashCards] = useState([]);
+  const [isLoading, setLoadingMessage, finishLoading, loadingMessage] =
+    useLoading((state) => [
+      state.isLoading,
+      state.setLoadingMessage,
+      state.finishLoading,
+      state.loadingMessage,
+    ]);
+
+  const [state, setState] = React.useState({
+    open: false,
+    vertical: "top",
+    horizontal: "center",
+  });
+  const { vertical, horizontal, open } = state;
+
+  const handleClick = (newState) => () => {
+    setState({ open: true, ...newState });
+  };
+
+  const handleClose = () => {
+    setState({ ...state, open: false });
+  };
+
+  useEffect(() => {
+    console.log("hah");
+
+    setLoadingMessage(`Fetching your cards...`);
+    handleClick({
+      vertical: "top",
+      horizontal: "center",
+    })();
+
+    async function fetchData() {
+
+      const cardArray = [];
+      await getDoc(doc(db, "info", name)).then((docSnap) => {
+        if (docSnap.exists()) {
+          console.log("Document data:", docSnap.data().cards);
+          docSnap.data().cards?.forEach((card) => {
+            cardArray.push(card);
+          });
+          console.log("cardArray :", cardArray);
+          setFlashCards(cardArray);
+        } else {
+          console.log("No such document!");
+        }
+        flashCards.splice(0, flashCards.length);
+      }).finally(()=>finishLoading());
+
+    }
+
+    try {
+      
+      fetchData();
+    } catch (error) {
+      console.log(error.message, "error getting cards");
+    }
+
+    // //clean up
+    // return ()=>{
+    //   setFlashCards([]);
+    // }
+  }, []);
+
+  useEffect(()=>{console.log(isLoading)},[isLoading])
+
   return (
     <AnimatedPage>
       <div
         className=" flex 
         flex-col
         h-screen
-        px-10
         bg-backcolor"
       >
-        <ReactCardFlip isFlipped={flip} flipDirection="vertical">
-          <div
-            style={{
-              width: "300px",
-              height: "200px",
-              background: "#d7fbda",
-              fontSize: "20px",
-              color: "green",
-              margin: "20px",
-              borderRadius: "4px",
-              textAlign: "center",
-              padding: "20px",
-            }}
-          >
-            Question?
-            <br />
-            <button
-              style={{
-                width: "150px",
-                padding: "10px",
-                fontSize: "20px",
-                background: "#f5d9fa",
-                fontWeight: "bold",
-                borderRadius: "5px",
-                marginTop: "50px",
-              }}
-              onClick={() => setFlip(!flip)}
-            >
-              Show
-            </button>
+        {isLoading && (
+          <div>
+            
+            <Snackbar
+              anchorOrigin={{ vertical, horizontal }}
+              open={open}
+              onClose={handleClose}
+              message={loadingMessage}
+              key={vertical + horizontal}
+              />
           </div>
-          <div
-            style={{
-              width: "300px",
-              height: "200px",
-              background: "#fbd7f8",
-              fontSize: "20px",
-              color: "blue",
-              margin: "20px",
-              borderRadius: "4px",
-              textAlign: "center",
-              padding: "20px",
-            }}
-          >
-            Answer
-            <br />
-            <button
-              style={{
-                width: "150px",
-                padding: "10px",
-                fontSize: "20px",
-                background: "#f5d9fa",
-                fontWeight: "bold",
-                borderRadius: "5px",
-                justifyContent: "end",
-                alignContent: "end",
-                marginTop: "50px",
-              }}
-              onClick={() => setFlip(!flip)}
-            >
-              <ArrowCircleRightTwoToneIcon />
-            </button>
-          </div>
-        </ReactCardFlip>
+        )}
+        <Grid container className=" cards h-screen justify-center">
+          {flashCards.map((card) => (
+            <div className="m-10">
+              <FlipCard front={card.front} back={card.back}></FlipCard>
+            </div>
+          ))}
+        </Grid>
       </div>
     </AnimatedPage>
   );

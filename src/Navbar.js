@@ -32,7 +32,7 @@ export default function Navbar() {
     getDownloadURL(ref(storage, "ProfilePic/" + user.name)).then((url) => {
       setProfilePic(url);
       console.log(url);
-      setProfileName(user.name)
+      setProfileName(user.name);
     });
   }, [setProfileName, setProfilePic, user.name]);
 
@@ -56,7 +56,10 @@ export default function Navbar() {
 
   return (
     <AnimatedPage>
-      <nav className="navbar">
+      <nav
+        style={{ position: "sticky", maxHeight: "200px", padding: "30px" }}
+        className="navbar"
+      >
         <div className="links">
           <Popper
             className="popper"
@@ -113,9 +116,10 @@ export default function Navbar() {
               </div>
             </Link>
 
-            <motion.div 
-            className="avatar right-12 absolute"
-            whileTap={{ scale: 0.9 }}>
+            <motion.div
+              className="avatar right-12 absolute"
+              whileTap={{ scale: 0.9 }}
+            >
               <Avatar
                 onClick={handleClick("bottom-end")}
                 sx={{ width: 55, height: 55, border: "4px solid  #3366ff" }}
